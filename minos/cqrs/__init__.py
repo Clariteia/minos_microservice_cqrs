@@ -20,6 +20,4 @@ from .exceptions import (
     MinosQueryServiceException,
     MinosIllegalHandlingException,
 )
-from .handlers import (
-    PreEventHandler,
-)
+from .handlers import PreEventHandler

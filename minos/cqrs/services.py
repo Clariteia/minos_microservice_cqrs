@@ -3,17 +3,11 @@ Copyright (C) 2021 Clariteia SL
 This file is part of minos framework.
 Minos framework can not be copied and/or distributed without the express permission of Clariteia SL.
 """
-from abc import (
-    ABC,
-)
+from abc import ABC
 from functools import partial
-from typing import (
-    Optional,
-)
+from typing import Optional
 
-from dependency_injector.wiring import (
-    Provide,
-)
+from dependency_injector.wiring import Provide
 
 from minos.common import (
     AggregateDiff,
@@ -24,12 +18,8 @@ from minos.networks import (
     Request,
     WrappedRequest,
 )
-from .exceptions import (
-    MinosIllegalHandlingException,
-)
-from .handlers import (
-    PreEventHandler,
-)
+from .exceptions import MinosIllegalHandlingException
+from .handlers import PreEventHandler
 
 
 class Service(ABC):
