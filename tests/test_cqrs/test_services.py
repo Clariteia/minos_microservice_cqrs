@@ -6,13 +6,12 @@ Minos framework can not be copied and/or distributed without the express permiss
 import unittest
 from unittest.mock import patch
 
-from minos.common.testing import (
-    PostgresAsyncTestCase,
-)
+from minos.common.testing import PostgresAsyncTestCase
 from minos.networks import WrappedRequest
 
 from minos.cqrs import (
-    MinosIllegalHandlingException, Service,
+    MinosIllegalHandlingException,
+    Service,
 )
 from tests.utils import (
     BASE_PATH,
