@@ -3,19 +3,24 @@ Copyright (C) 2021 Clariteia SL
 This file is part of minos framework.
 Minos framework can not be copied and/or distributed without the express permission of Clariteia SL.
 """
-from pathlib import Path
-from uuid import UUID
+from pathlib import (
+    Path,
+)
+from uuid import (
+    UUID,
+)
 
 from minos.common import (
     CommandReply,
     MinosSagaManager,
 )
-from minos.networks import Request
-
 from minos.cqrs import (
     CommandService,
     QueryService,
     Service,
+)
+from minos.networks import (
+    Request,
 )
 
 BASE_PATH = Path(__file__).parent
