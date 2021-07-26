@@ -15,9 +15,7 @@ from .exceptions import (
     MinosIllegalHandlingException,
     MinosQueryServiceException,
 )
-from .handlers import (
-    PreEventHandler,
-)
+from .handlers import PreEventHandler
 from .services import (
     CommandService,
     QueryService,

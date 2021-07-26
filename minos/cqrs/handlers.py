@@ -5,9 +5,7 @@ This file is part of minos framework.
 
 Minos framework can not be copied and/or distributed without the express permission of Clariteia SL.
 """
-from uuid import (
-    UUID,
-)
+from uuid import UUID
 
 from minos.common import (
     AggregateDiff,
@@ -23,9 +21,7 @@ from minos.saga import (
     SagaStatus,
 )
 
-from .exceptions import (
-    MinosQueryServiceException,
-)
+from .exceptions import MinosQueryServiceException
 
 
 class PreEventHandler:
@@ -60,8 +56,8 @@ class PreEventHandler:
         for name, uuids in missing.items():
             saga = (
                 saga.step()
-                    .invoke_participant(f"Get{name}s", cls.invoke_callback, SagaContext(uuids=list(uuids)))
-                    .on_reply(f"{name}s")
+                .invoke_participant(f"Get{name}s", cls.invoke_callback, SagaContext(uuids=list(uuids)))
+                .on_reply(f"{name}s")
             )
         saga = saga.commit(cls.commit_callback, parameters=SagaContext(diff=diff))
 
