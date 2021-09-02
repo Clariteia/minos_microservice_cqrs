@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>minos.cqrs.exceptions module &mdash; Minos Microservice CQRS 0.0.1 documentation</title>
+  <title>minos.cqrs.exceptions module &mdash; Minos Microservice CQRS 0.0.2 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.0.2
               </div>
             
           
@@ -180,9 +180,7 @@
             
   <div class="section" id="module-minos.cqrs.exceptions">
 <span id="minos-cqrs-exceptions-module"></span><h1>minos.cqrs.exceptions module<a class="headerlink" href="#module-minos.cqrs.exceptions" title="Permalink to this headline">¶</a></h1>
-<p>Copyright (C) 2021 Clariteia SL</p>
-<p>This file is part of minos framework.</p>
-<p>Minos framework can not be copied and/or distributed without the express permission of Clariteia SL.</p>
+<p>minos.cqrs.exceptions module.</p>
 <dl class="py exception">
 <dt class="sig sig-object py" id="minos.cqrs.exceptions.MinosCqrsException">
 <em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">minos.cqrs.exceptions.</span></span><span class="sig-name descname"><span class="pre">MinosCqrsException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error_message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/exceptions.html#MinosCqrsException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.exceptions.MinosCqrsException" title="Permalink to this definition">¶</a></dt>
@@ -225,6 +223,30 @@ set self.__traceback__ to tb and return self.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="minos.cqrs.exceptions.MinosIllegalHandlingException.with_traceback">
 <span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#minos.cqrs.exceptions.MinosIllegalHandlingException.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="minos.cqrs.exceptions.MinosNotAnyMissingReferenceException">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">minos.cqrs.exceptions.</span></span><span class="sig-name descname"><span class="pre">MinosNotAnyMissingReferenceException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error_message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/exceptions.html#MinosNotAnyMissingReferenceException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.exceptions.MinosNotAnyMissingReferenceException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#minos.cqrs.exceptions.MinosQueryServiceException" title="minos.cqrs.exceptions.MinosQueryServiceException"><code class="xref py py-class docutils literal notranslate"><span class="pre">minos.cqrs.exceptions.MinosQueryServiceException</span></code></a></p>
+<p>Exception to be raised when an aggregate diff does not have any missing reference.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="minos.cqrs.exceptions.MinosNotAnyMissingReferenceException.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error_message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#minos.cqrs.exceptions.MinosNotAnyMissingReferenceException.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="minos.cqrs.exceptions.MinosNotAnyMissingReferenceException.args">
+<span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#minos.cqrs.exceptions.MinosNotAnyMissingReferenceException.args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="minos.cqrs.exceptions.MinosNotAnyMissingReferenceException.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#minos.cqrs.exceptions.MinosNotAnyMissingReferenceException.with_traceback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exception.with_traceback(tb) –
 set self.__traceback__ to tb and return self.</p>
 </dd></dl>

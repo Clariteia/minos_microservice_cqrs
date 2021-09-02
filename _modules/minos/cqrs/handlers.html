@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>minos.cqrs.handlers &mdash; Minos Microservice CQRS 0.0.1 documentation</title>
+  <title>minos.cqrs.handlers &mdash; Minos Microservice CQRS 0.0.2 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.0.2
               </div>
             
           
@@ -162,21 +162,16 @@
            <div itemprop="articleBody">
             
   <h1>Source code for minos.cqrs.handlers</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Copyright (C) 2021 Clariteia SL</span>
+<span></span><span class="sd">&quot;&quot;&quot;minos.cqrs.handlers module.&quot;&quot;&quot;</span>
 
-<span class="sd">This file is part of minos framework.</span>
-
-<span class="sd">Minos framework can not be copied and/or distributed without the express permission of Clariteia SL.</span>
-<span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">UUID</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">minos.common</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">AggregateDiff</span><span class="p">,</span>
-    <span class="n">DataTransferObject</span><span class="p">,</span>
     <span class="n">MinosSagaManager</span><span class="p">,</span>
+    <span class="n">Model</span><span class="p">,</span>
     <span class="n">ModelRefExtractor</span><span class="p">,</span>
     <span class="n">ModelRefInjector</span><span class="p">,</span>
     <span class="n">ModelType</span><span class="p">,</span>
@@ -189,6 +184,7 @@
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MinosNotAnyMissingReferenceException</span><span class="p">,</span>
     <span class="n">MinosQueryServiceException</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -204,10 +200,12 @@
 <span class="sd">        :param saga_manager: The saga manager to be used to compute the queries to another microservices.</span>
 <span class="sd">        :return: The recomposed aggregate difference.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">definition</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">build_saga</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
-        <span class="n">execution</span> <span class="o">=</span> <span class="k">await</span> <span class="n">saga_manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-            <span class="n">definition</span><span class="o">=</span><span class="n">definition</span><span class="p">,</span> <span class="n">pause_on_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_execution</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">definition</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">build_saga</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">MinosNotAnyMissingReferenceException</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">diff</span>
+
+        <span class="n">execution</span> <span class="o">=</span> <span class="k">await</span> <span class="n">saga_manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">definition</span><span class="o">=</span><span class="n">definition</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">execution</span><span class="p">,</span> <span class="n">SagaExecution</span><span class="p">)</span> <span class="ow">or</span> <span class="n">execution</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="n">SagaStatus</span><span class="o">.</span><span class="n">Finished</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">MinosQueryServiceException</span><span class="p">(</span><span class="s2">&quot;The saga execution could not finish.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">execution</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="s2">&quot;diff&quot;</span><span class="p">]</span></div>
@@ -221,7 +219,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">missing</span> <span class="o">=</span> <span class="n">ModelRefExtractor</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">fields_diff</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 
-        <span class="n">saga</span> <span class="o">=</span> <span class="n">Saga</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">MinosNotAnyMissingReferenceException</span><span class="p">(</span><span class="s2">&quot;The diff does not have any missing reference.&quot;</span><span class="p">)</span>
+
+        <span class="n">saga</span> <span class="o">=</span> <span class="n">Saga</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">uuids</span> <span class="ow">in</span> <span class="n">missing</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">saga</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">saga</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
@@ -234,7 +235,7 @@
 
     <span class="c1"># noinspection PyUnusedLocal</span>
 <div class="viewcode-block" id="PreEventHandler.invoke_callback"><a class="viewcode-back" href="../../../api/minos.cqrs.handlers.html#minos.cqrs.handlers.PreEventHandler.invoke_callback">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">invoke_callback</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">SagaContext</span><span class="p">,</span> <span class="n">uuids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">UUID</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">DataTransferObject</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">invoke_callback</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">SagaContext</span><span class="p">,</span> <span class="n">uuids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">UUID</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Model</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Callback to prepare data before invoking participants.</span>
 
 <span class="sd">        :param context: The saga context (ignored).</span>
