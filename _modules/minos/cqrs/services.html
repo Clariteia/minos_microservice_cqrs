@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>minos.cqrs.services &mdash; Minos Microservice CQRS 0.0.2 documentation</title>
+  <title>minos.cqrs.services &mdash; Minos Microservice CQRS 0.0.3 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.0.2
+                0.0.3
               </div>
             
           
@@ -162,13 +162,11 @@
            <div itemprop="articleBody">
             
   <h1>Source code for minos.cqrs.services</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Copyright (C) 2021 Clariteia SL</span>
-<span class="sd">This file is part of minos framework.</span>
-<span class="sd">Minos framework can not be copied and/or distributed without the express permission of Clariteia SL.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="p">(</span>
+<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">ABC</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">asyncio</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">gather</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">partial</span><span class="p">,</span>
@@ -254,7 +252,57 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_pre_event_handle</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Request</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">MinosIllegalHandlingException</span><span class="p">(</span><span class="s2">&quot;Events cannot be handled by `CommandService` inherited classes.&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="n">MinosIllegalHandlingException</span><span class="p">(</span><span class="s2">&quot;Events cannot be handled by `CommandService` inherited classes.&quot;</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">__get_enroute__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">MinosConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">set</span><span class="p">[</span><span class="n">EnrouteDecorator</span><span class="p">]]:</span>
+        <span class="n">aggregate_name</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">aggregate</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">additional</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">__get_aggregate__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="p">{</span><span class="n">enroute</span><span class="o">.</span><span class="n">broker</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Get</span><span class="si">{</span><span class="n">aggregate_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)},</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">__get_aggregates__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="p">{</span><span class="n">enroute</span><span class="o">.</span><span class="n">broker</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Get</span><span class="si">{</span><span class="n">aggregate_name</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)},</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__get_enroute__</span><span class="p">(</span><span class="n">config</span><span class="p">)</span> <span class="o">|</span> <span class="n">additional</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">__get_aggregate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get aggregate.</span>
+
+<span class="sd">        :param request: The ``Request`` instance that contains the aggregate identifier.</span>
+<span class="sd">        :return: A ``Response`` instance containing the requested aggregate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">content</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="n">ModelType</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="s2">&quot;Query&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;uuid&quot;</span><span class="p">:</span> <span class="n">UUID</span><span class="p">}))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ResponseException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There was a problem while parsing the given request: </span><span class="si">{</span><span class="n">exc</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">aggregate</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">__aggregate_cls__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">content</span><span class="p">[</span><span class="s2">&quot;uuid&quot;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ResponseException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There was a problem while getting the aggregate: </span><span class="si">{</span><span class="n">exc</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">aggregate</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">__get_aggregates__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get aggregates.</span>
+
+<span class="sd">        :param request: The ``Request`` instance that contains the product identifiers.</span>
+<span class="sd">        :return: A ``Response`` instance containing the requested aggregates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">content</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="n">ModelType</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="s2">&quot;Query&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;uuids&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">UUID</span><span class="p">]}))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ResponseException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There was a problem while parsing the given request: </span><span class="si">{</span><span class="n">exc</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">aggregates</span> <span class="o">=</span> <span class="k">await</span> <span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__aggregate_cls__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span> <span class="k">for</span> <span class="n">uuid</span> <span class="ow">in</span> <span class="n">content</span><span class="p">[</span><span class="s2">&quot;uuids&quot;</span><span class="p">]))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ResponseException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There was a problem while getting aggregates: </span><span class="si">{</span><span class="n">exc</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">aggregates</span><span class="p">)</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">__aggregate_cls__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">Aggregate</span><span class="p">]:</span>
+        <span class="c1"># noinspection PyTypeChecker</span>
+        <span class="k">return</span> <span class="n">import_module</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">aggregate</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="QueryService"><a class="viewcode-back" href="../../../api/minos.cqrs.services.html#minos.cqrs.services.QueryService">[docs]</a><span class="k">class</span> <span class="nc">QueryService</span><span class="p">(</span><span class="n">Service</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
@@ -270,59 +318,7 @@
 
     <span class="k">def</span> <span class="nf">_pre_event_handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Request</span><span class="p">:</span>
         <span class="n">fn</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">PreEventHandler</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">saga_manager</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">saga_manager</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">WrappedRequest</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">fn</span><span class="p">)</span>
-
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">__get_enroute__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">MinosConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">set</span><span class="p">[</span><span class="n">EnrouteDecorator</span><span class="p">]]:</span>
-        <span class="n">aggregate_name</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">aggregate</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">additional</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">__get_aggregate__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="p">{</span><span class="n">enroute</span><span class="o">.</span><span class="n">broker</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Get</span><span class="si">{</span><span class="n">aggregate_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)},</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">__get_aggregates__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="p">{</span><span class="n">enroute</span><span class="o">.</span><span class="n">broker</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Get</span><span class="si">{</span><span class="n">aggregate_name</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)},</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__get_enroute__</span><span class="p">(</span><span class="n">config</span><span class="p">)</span> <span class="o">|</span> <span class="n">additional</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">__get_aggregate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get product.</span>
-
-<span class="sd">        :param request: The ``Request`` instance that contains the product identifier.</span>
-<span class="sd">        :return: A ``Response`` instance containing the requested product.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">content</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="n">ModelType</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="s2">&quot;Query&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;uuid&quot;</span><span class="p">:</span> <span class="n">UUID</span><span class="p">}))</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ResponseException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There was a problem while parsing the given request: </span><span class="si">{</span><span class="n">exc</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">product</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">__aggregate_cls__</span><span class="o">.</span><span class="n">get_one</span><span class="p">(</span><span class="n">content</span><span class="p">[</span><span class="s2">&quot;uuid&quot;</span><span class="p">])</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ResponseException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There was a problem while getting the product: </span><span class="si">{</span><span class="n">exc</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">product</span><span class="p">)</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">__get_aggregates__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get products.</span>
-
-<span class="sd">        :param request: The ``Request`` instance that contains the product identifiers.</span>
-<span class="sd">        :return: A ``Response`` instance containing the requested products.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">content</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="n">ModelType</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="s2">&quot;Query&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;uuids&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">UUID</span><span class="p">]}))</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ResponseException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There was a problem while parsing the given request: </span><span class="si">{</span><span class="n">exc</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">iterable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__aggregate_cls__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uuids</span><span class="o">=</span><span class="n">content</span><span class="p">[</span><span class="s2">&quot;uuids&quot;</span><span class="p">])</span>
-            <span class="n">values</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="o">.</span><span class="n">uuid</span><span class="p">:</span> <span class="n">v</span> <span class="k">async</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">}</span>
-            <span class="n">products</span> <span class="o">=</span> <span class="p">[</span><span class="n">values</span><span class="p">[</span><span class="n">uuid</span><span class="p">]</span> <span class="k">for</span> <span class="n">uuid</span> <span class="ow">in</span> <span class="n">content</span><span class="p">[</span><span class="s2">&quot;uuids&quot;</span><span class="p">]]</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ResponseException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There was a problem while getting products: </span><span class="si">{</span><span class="n">exc</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">products</span><span class="p">)</span>
-
-    <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">__aggregate_cls__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">Aggregate</span><span class="p">]:</span>
-        <span class="c1"># noinspection PyTypeChecker</span>
-        <span class="k">return</span> <span class="n">import_module</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">aggregate</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">WrappedRequest</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">fn</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
