@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>minos.cqrs.handlers &mdash; Minos Microservice CQRS 0.0.3 documentation</title>
+  <title>minos.cqrs.handlers &mdash; Minos Microservice CQRS 0.0.4 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.0.3
+                0.0.4
               </div>
             
           
@@ -191,13 +191,20 @@
     <span class="sd">&quot;&quot;&quot;Pre Event Handler class.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="PreEventHandler.handle"><a class="viewcode-back" href="../../../api/minos.cqrs.handlers.html#minos.cqrs.handlers.PreEventHandler.handle">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">diff</span><span class="p">:</span> <span class="n">AggregateDiff</span><span class="p">,</span> <span class="n">saga_manager</span><span class="p">:</span> <span class="n">MinosSagaManager</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AggregateDiff</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">diff</span><span class="p">:</span> <span class="n">AggregateDiff</span><span class="p">,</span> <span class="n">saga_manager</span><span class="p">:</span> <span class="n">MinosSagaManager</span><span class="p">,</span> <span class="n">resolve_references</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AggregateDiff</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Handle pre event function.</span>
 
 <span class="sd">        :param diff: The initial aggregate difference.</span>
 <span class="sd">        :param saga_manager: The saga manager to be used to compute the queries to another microservices.</span>
+<span class="sd">        :param resolve_references: If ``True``, reference are resolved, otherwise, the ``AggregateDiff`` is returned</span>
+<span class="sd">            without any modification.</span>
 <span class="sd">        :return: The recomposed aggregate difference.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">resolve_references</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">diff</span>
+
         <span class="k">try</span><span class="p">:</span>
             <span class="n">definition</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">build_saga</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">MinosNotAnyMissingReferenceException</span><span class="p">:</span>
