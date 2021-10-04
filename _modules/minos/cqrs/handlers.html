@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>minos.cqrs.handlers &mdash; Minos Microservice CQRS 0.0.4 documentation</title>
+  <title>minos.cqrs.handlers &mdash; Minos Microservice CQRS 0.0.5 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.0.4
+                0.0.5
               </div>
             
           
@@ -162,7 +162,14 @@
            <div itemprop="articleBody">
             
   <h1>Source code for minos.cqrs.handlers</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="p">(</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">annotations</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TypeVar</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">UUID</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -191,9 +198,7 @@
     <span class="sd">&quot;&quot;&quot;Pre Event Handler class.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="PreEventHandler.handle"><a class="viewcode-back" href="../../../api/minos.cqrs.handlers.html#minos.cqrs.handlers.PreEventHandler.handle">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">,</span> <span class="n">diff</span><span class="p">:</span> <span class="n">AggregateDiff</span><span class="p">,</span> <span class="n">saga_manager</span><span class="p">:</span> <span class="n">MinosSagaManager</span><span class="p">,</span> <span class="n">resolve_references</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AggregateDiff</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">diff</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="n">saga_manager</span><span class="p">:</span> <span class="n">MinosSagaManager</span><span class="p">,</span> <span class="n">resolve_references</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Handle pre event function.</span>
 
 <span class="sd">        :param diff: The initial aggregate difference.</span>
@@ -202,7 +207,7 @@
 <span class="sd">            without any modification.</span>
 <span class="sd">        :return: The recomposed aggregate difference.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">resolve_references</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">AggregateDiff</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">resolve_references</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">diff</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -265,6 +270,9 @@
 
         <span class="n">diff</span> <span class="o">=</span> <span class="n">ModelRefInjector</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">recovered</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">SagaContext</span><span class="p">(</span><span class="n">diff</span><span class="o">=</span><span class="n">diff</span><span class="p">)</span></div></div>
+
+
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
 </pre></div>
 
            </div>
