@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>minos.cqrs.handlers &mdash; Minos Microservice CQRS 0.0.5 documentation</title>
+  <title>minos.cqrs.handlers &mdash; Minos Microservice CQRS 0.0.6 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.0.5
+                0.0.6
               </div>
             
           
@@ -176,16 +176,18 @@
 <span class="kn">from</span> <span class="nn">minos.common</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">AggregateDiff</span><span class="p">,</span>
     <span class="n">MinosSagaManager</span><span class="p">,</span>
-    <span class="n">Model</span><span class="p">,</span>
     <span class="n">ModelRefExtractor</span><span class="p">,</span>
     <span class="n">ModelRefInjector</span><span class="p">,</span>
-    <span class="n">ModelType</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">minos.saga</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Saga</span><span class="p">,</span>
     <span class="n">SagaContext</span><span class="p">,</span>
     <span class="n">SagaExecution</span><span class="p">,</span>
+    <span class="n">SagaOperation</span><span class="p">,</span>
+    <span class="n">SagaRequest</span><span class="p">,</span>
+    <span class="n">SagaResponse</span><span class="p">,</span>
     <span class="n">SagaStatus</span><span class="p">,</span>
+    <span class="n">SagaStep</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="p">(</span>
@@ -232,30 +234,45 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">MinosNotAnyMissingReferenceException</span><span class="p">(</span><span class="s2">&quot;The diff does not have any missing reference.&quot;</span><span class="p">)</span>
 
-        <span class="n">saga</span> <span class="o">=</span> <span class="n">Saga</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">uuids</span> <span class="ow">in</span> <span class="n">missing</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">saga</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">saga</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">invoke_participant</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Get</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">invoke_callback</span><span class="p">,</span> <span class="n">SagaContext</span><span class="p">(</span><span class="n">uuids</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">uuids</span><span class="p">)))</span>
-                <span class="o">.</span><span class="n">on_reply</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+        <span class="n">steps</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">SagaStep</span><span class="p">(</span>
+                <span class="n">on_execute</span><span class="o">=</span><span class="n">SagaOperation</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">on_execute</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">uuids</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">uuids</span><span class="p">)),</span>
+                <span class="n">on_success</span><span class="o">=</span><span class="n">SagaOperation</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">on_success</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">),</span>
             <span class="p">)</span>
-        <span class="n">saga</span> <span class="o">=</span> <span class="n">saga</span><span class="o">.</span><span class="n">commit</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">commit_callback</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">SagaContext</span><span class="p">(</span><span class="n">diff</span><span class="o">=</span><span class="n">diff</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">uuids</span> <span class="ow">in</span> <span class="n">missing</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">]</span>
+        <span class="n">commit</span> <span class="o">=</span> <span class="n">SagaOperation</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">commit</span><span class="p">,</span> <span class="n">diff</span><span class="o">=</span><span class="n">diff</span><span class="p">)</span>
+
+        <span class="n">saga</span> <span class="o">=</span> <span class="n">Saga</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="n">steps</span><span class="p">,</span> <span class="n">commit</span><span class="o">=</span><span class="n">commit</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">saga</span></div>
 
     <span class="c1"># noinspection PyUnusedLocal</span>
-<div class="viewcode-block" id="PreEventHandler.invoke_callback"><a class="viewcode-back" href="../../../api/minos.cqrs.handlers.html#minos.cqrs.handlers.PreEventHandler.invoke_callback">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">invoke_callback</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">SagaContext</span><span class="p">,</span> <span class="n">uuids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">UUID</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Model</span><span class="p">:</span>
+<div class="viewcode-block" id="PreEventHandler.on_execute"><a class="viewcode-back" href="../../../api/minos.cqrs.handlers.html#minos.cqrs.handlers.PreEventHandler.on_execute">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">on_execute</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">SagaContext</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">uuids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">UUID</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">SagaRequest</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Callback to prepare data before invoking participants.</span>
 
 <span class="sd">        :param context: The saga context (ignored).</span>
+<span class="sd">        :param name: The name of the aggregate.</span>
 <span class="sd">        :param uuids: The list of identifiers.</span>
 <span class="sd">        :return: A dto instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ModelType</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="s2">&quot;Query&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;uuids&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">UUID</span><span class="p">]})(</span><span class="n">uuids</span><span class="o">=</span><span class="n">uuids</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">SagaRequest</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Get</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;uuids&quot;</span><span class="p">:</span> <span class="n">uuids</span><span class="p">})</span></div>
 
-<div class="viewcode-block" id="PreEventHandler.commit_callback"><a class="viewcode-back" href="../../../api/minos.cqrs.handlers.html#minos.cqrs.handlers.PreEventHandler.commit_callback">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">commit_callback</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">SagaContext</span><span class="p">,</span> <span class="n">diff</span><span class="p">:</span> <span class="n">AggregateDiff</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SagaContext</span><span class="p">:</span>
+<div class="viewcode-block" id="PreEventHandler.on_success"><a class="viewcode-back" href="../../../api/minos.cqrs.handlers.html#minos.cqrs.handlers.PreEventHandler.on_success">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">on_success</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">SagaContext</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">SagaResponse</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SagaContext</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Callback to handle the response on successful cases.</span>
+
+<span class="sd">        :param context: The previous saga context instance.</span>
+<span class="sd">        :param response: The obtained response.</span>
+<span class="sd">        :param name: The name of the aggregate.</span>
+<span class="sd">        :return: The new saga context instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">context</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">context</span></div>
+
+<div class="viewcode-block" id="PreEventHandler.commit"><a class="viewcode-back" href="../../../api/minos.cqrs.handlers.html#minos.cqrs.handlers.PreEventHandler.commit">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">commit</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">SagaContext</span><span class="p">,</span> <span class="n">diff</span><span class="p">:</span> <span class="n">AggregateDiff</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SagaContext</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Callback to be executed at the end of the saga.</span>
 
 <span class="sd">        :param context: The saga execution context.</span>
