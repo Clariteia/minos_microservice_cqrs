@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>minos.cqrs.services &mdash; Minos Microservice CQRS 0.0.6 documentation</title>
+  <title>minos.cqrs.services &mdash; Minos Microservice CQRS 0.0.7 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.0.6
+                0.0.7
               </div>
             
           
@@ -251,7 +251,7 @@
         <span class="k">raise</span> <span class="n">MinosIllegalHandlingException</span><span class="p">(</span><span class="s2">&quot;Queries cannot be handled by `CommandService` inherited classes.&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_pre_event_handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Request</span><span class="p">:</span>
-        <span class="n">fn</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">PreEventHandler</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">saga_manager</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">saga_manager</span><span class="p">)</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">PreEventHandler</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">saga_manager</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">saga_manager</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">WrappedRequest</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">fn</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
@@ -317,7 +317,7 @@
         <span class="k">return</span> <span class="n">request</span>
 
     <span class="k">def</span> <span class="nf">_pre_event_handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Request</span><span class="p">:</span>
-        <span class="n">fn</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">PreEventHandler</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">saga_manager</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">saga_manager</span><span class="p">)</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">PreEventHandler</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">saga_manager</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">saga_manager</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">WrappedRequest</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">fn</span><span class="p">)</span></div>
 </pre></div>
 

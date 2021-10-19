@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>minos.cqrs.handlers module &mdash; Minos Microservice CQRS 0.0.6 documentation</title>
+  <title>minos.cqrs.handlers module &mdash; Minos Microservice CQRS 0.0.7 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.0.6
+                0.0.7
               </div>
             
           
@@ -224,12 +224,13 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="minos.cqrs.handlers.PreEventHandler.handle">
-<em class="property"><span class="pre">async</span> <span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saga_manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolve_references</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/handlers.html#PreEventHandler.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.handlers.PreEventHandler.handle" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span> <span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saga_manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolve_references</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/handlers.html#PreEventHandler.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.handlers.PreEventHandler.handle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle pre event function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>diff</strong> (<em>~T</em>) – The initial aggregate difference.</p></li>
+<li><p><strong>user</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">typing.Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">uuid.UUID</span></code>]) – TODO</p></li>
 <li><p><strong>saga_manager</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">minos.common.saga.MinosSagaManager</span></code>) – The saga manager to be used to compute the queries to another microservices.</p></li>
 <li><p><strong>resolve_references</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, reference are resolved, otherwise, the <code class="docutils literal notranslate"><span class="pre">AggregateDiff</span></code> is returned
 without any modification.</p></li>
