@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>minos.cqrs.handlers module &mdash; Minos Microservice CQRS 0.0.7 documentation</title>
+  <title>minos.cqrs.handlers module &mdash; Minos Microservice CQRS 0.1.0 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.0.7
+                0.1.0
               </div>
             
           
@@ -191,7 +191,7 @@
 <dd><p>Build a saga to query the referenced aggregates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>diff</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">minos.common.model.declarative.aggregate.diff.AggregateDiff</span></code>) – The base aggregate difference.</p>
+<dd class="field-odd"><p><strong>diff</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">minos.aggregate.models.diffs.aggregates.AggregateDiff</span></code>) – The base aggregate difference.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">minos.saga.definitions.saga.Saga</span></code></p>
@@ -210,7 +210,7 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>context</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">minos.saga.context.SagaContext</span></code>) – The saga execution context.</p></li>
-<li><p><strong>diff</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">minos.common.model.declarative.aggregate.diff.AggregateDiff</span></code>) – The initial aggregate difference.</p></li>
+<li><p><strong>diff</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">minos.aggregate.models.diffs.aggregates.AggregateDiff</span></code>) – The initial aggregate difference.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -231,7 +231,7 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>diff</strong> (<em>~T</em>) – The initial aggregate difference.</p></li>
 <li><p><strong>user</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">typing.Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">uuid.UUID</span></code>]) – TODO</p></li>
-<li><p><strong>saga_manager</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">minos.common.saga.MinosSagaManager</span></code>) – The saga manager to be used to compute the queries to another microservices.</p></li>
+<li><p><strong>saga_manager</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">minos.saga.manager.SagaManager</span></code>) – The saga manager to be used to compute the queries to another microservices.</p></li>
 <li><p><strong>resolve_references</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, reference are resolved, otherwise, the <code class="docutils literal notranslate"><span class="pre">AggregateDiff</span></code> is returned
 without any modification.</p></li>
 </ul>

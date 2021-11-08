@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>minos.cqrs.services &mdash; Minos Microservice CQRS 0.0.7 documentation</title>
+  <title>minos.cqrs.services &mdash; Minos Microservice CQRS 0.1.0 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.0.7
+                0.1.0
               </div>
             
           
@@ -191,10 +191,11 @@
     <span class="n">inject</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">minos.common</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">minos.aggregate</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Aggregate</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">minos.common</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">MinosConfig</span><span class="p">,</span>
-    <span class="n">MinosSagaManager</span><span class="p">,</span>
     <span class="n">ModelType</span><span class="p">,</span>
     <span class="n">import_module</span><span class="p">,</span>
 <span class="p">)</span>
@@ -205,6 +206,9 @@
     <span class="n">ResponseException</span><span class="p">,</span>
     <span class="n">WrappedRequest</span><span class="p">,</span>
     <span class="n">enroute</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">minos.saga</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SagaManager</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="p">(</span>
@@ -223,7 +227,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="n">config</span><span class="p">:</span> <span class="n">MinosConfig</span> <span class="o">=</span> <span class="n">Provide</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">],</span>
-        <span class="n">saga_manager</span><span class="p">:</span> <span class="n">MinosSagaManager</span> <span class="o">=</span> <span class="n">Provide</span><span class="p">[</span><span class="s2">&quot;saga_manager&quot;</span><span class="p">],</span>
+        <span class="n">saga_manager</span><span class="p">:</span> <span class="n">SagaManager</span> <span class="o">=</span> <span class="n">Provide</span><span class="p">[</span><span class="s2">&quot;saga_manager&quot;</span><span class="p">],</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
