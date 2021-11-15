@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>minos.cqrs.exceptions module &mdash; Minos Microservice CQRS 0.1.0 documentation</title>
+  <title>minos.cqrs.exceptions module &mdash; Minos Microservice CQRS 0.2.0 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.1.0
+                0.2.0
               </div>
             
           
@@ -182,7 +182,7 @@
 <span id="minos-cqrs-exceptions-module"></span><h1>minos.cqrs.exceptions module<a class="headerlink" href="#module-minos.cqrs.exceptions" title="Permalink to this headline">¶</a></h1>
 <dl class="py exception">
 <dt class="sig sig-object py" id="minos.cqrs.exceptions.MinosCqrsException">
-<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">minos.cqrs.exceptions.</span></span><span class="sig-name descname"><span class="pre">MinosCqrsException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error_message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/exceptions.html#MinosCqrsException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.exceptions.MinosCqrsException" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">minos.cqrs.exceptions.</span></span><span class="sig-name descname"><span class="pre">MinosCqrsException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error_message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/exceptions.html#MinosCqrsException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.exceptions.MinosCqrsException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">minos.common.exceptions.MinosException</span></code></p>
 <p>Base CQRS exception.</p>
 <dl class="py method">
@@ -206,7 +206,7 @@ set self.__traceback__ to tb and return self.</p>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="minos.cqrs.exceptions.MinosIllegalHandlingException">
-<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">minos.cqrs.exceptions.</span></span><span class="sig-name descname"><span class="pre">MinosIllegalHandlingException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error_message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/exceptions.html#MinosIllegalHandlingException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.exceptions.MinosIllegalHandlingException" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">minos.cqrs.exceptions.</span></span><span class="sig-name descname"><span class="pre">MinosIllegalHandlingException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error_message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/exceptions.html#MinosIllegalHandlingException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.exceptions.MinosIllegalHandlingException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">minos.common.exceptions.MinosException</span></code></p>
 <p>Exception to be raised when a service is trying to be used to handle improper message types.</p>
 <dl class="py method">
@@ -230,7 +230,7 @@ set self.__traceback__ to tb and return self.</p>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="minos.cqrs.exceptions.MinosNotAnyMissingReferenceException">
-<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">minos.cqrs.exceptions.</span></span><span class="sig-name descname"><span class="pre">MinosNotAnyMissingReferenceException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error_message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/exceptions.html#MinosNotAnyMissingReferenceException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.exceptions.MinosNotAnyMissingReferenceException" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">minos.cqrs.exceptions.</span></span><span class="sig-name descname"><span class="pre">MinosNotAnyMissingReferenceException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error_message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/exceptions.html#MinosNotAnyMissingReferenceException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.exceptions.MinosNotAnyMissingReferenceException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#minos.cqrs.exceptions.MinosQueryServiceException" title="minos.cqrs.exceptions.MinosQueryServiceException"><code class="xref py py-class docutils literal notranslate"><span class="pre">minos.cqrs.exceptions.MinosQueryServiceException</span></code></a></p>
 <p>Exception to be raised when an aggregate diff does not have any missing reference.</p>
 <dl class="py method">
@@ -254,7 +254,7 @@ set self.__traceback__ to tb and return self.</p>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="minos.cqrs.exceptions.MinosQueryServiceException">
-<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">minos.cqrs.exceptions.</span></span><span class="sig-name descname"><span class="pre">MinosQueryServiceException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error_message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/exceptions.html#MinosQueryServiceException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.exceptions.MinosQueryServiceException" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">minos.cqrs.exceptions.</span></span><span class="sig-name descname"><span class="pre">MinosQueryServiceException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error_message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/exceptions.html#MinosQueryServiceException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.exceptions.MinosQueryServiceException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#minos.cqrs.exceptions.MinosCqrsException" title="minos.cqrs.exceptions.MinosCqrsException"><code class="xref py py-class docutils literal notranslate"><span class="pre">minos.cqrs.exceptions.MinosCqrsException</span></code></a></p>
 <p>Exception to be raised by query service when an internal error is raised.</p>
 <dl class="py method">
