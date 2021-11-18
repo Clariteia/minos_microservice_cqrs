@@ -1,18 +1,12 @@
-from __future__ import (
-    annotations,
-)
+from __future__ import annotations
 
-from typing import (
-    TypeVar,
-)
+from typing import TypeVar
 from minos.aggregate import (
     AggregateDiff,
     ModelRefExtractor,
     ModelRefInjector,
 )
-from minos.common import (
-    Model,
-)
+from minos.common import Model
 from minos.networks import (
     CommandBroker,
     DynamicHandler,

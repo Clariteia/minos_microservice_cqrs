@@ -1,9 +1,5 @@
-from abc import (
-    ABC,
-)
-from functools import (
-    partial,
-)
+from abc import ABC
+from functools import partial
 from inspect import (
     getmembers,
     isfunction,
@@ -15,9 +11,7 @@ from dependency_injector.wiring import (
     inject,
 )
 
-from minos.common import (
-    MinosConfig,
-)
+from minos.common import MinosConfig
 from minos.networks import (
     CommandBroker,
     DynamicHandlerPool,
@@ -25,16 +19,10 @@ from minos.networks import (
     Request,
     WrappedRequest,
 )
-from minos.saga import (
-    SagaManager,
-)
+from minos.saga import SagaManager
 
-from .exceptions import (
-    MinosIllegalHandlingException,
-)
-from .handlers import (
-    PreEventHandler,
-)
+from .exceptions import MinosIllegalHandlingException
+from .handlers import PreEventHandler
 
 
 class Service(ABC):
