@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>minos.cqrs.handlers &mdash; Minos Microservice CQRS 0.2.0 documentation</title>
+  <title>minos.cqrs.handlers &mdash; Minos Microservice CQRS 0.2.1 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.2.0
+                0.2.1
               </div>
             
           
@@ -166,133 +166,39 @@
     <span class="n">annotations</span><span class="p">,</span>
 <span class="p">)</span>
 
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Optional</span><span class="p">,</span>
     <span class="n">TypeVar</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">UUID</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">minos.aggregate</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">AggregateDiff</span><span class="p">,</span>
-    <span class="n">ModelRefExtractor</span><span class="p">,</span>
-    <span class="n">ModelRefInjector</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">minos.saga</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">LocalSagaStep</span><span class="p">,</span>
-    <span class="n">RemoteSagaStep</span><span class="p">,</span>
-    <span class="n">Saga</span><span class="p">,</span>
-    <span class="n">SagaContext</span><span class="p">,</span>
-    <span class="n">SagaExecution</span><span class="p">,</span>
-    <span class="n">SagaManager</span><span class="p">,</span>
-    <span class="n">SagaOperation</span><span class="p">,</span>
-    <span class="n">SagaRequest</span><span class="p">,</span>
-    <span class="n">SagaResponse</span><span class="p">,</span>
-    <span class="n">SagaStatus</span><span class="p">,</span>
+    <span class="n">ModelRefResolver</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">MinosNotAnyMissingReferenceException</span><span class="p">,</span>
-    <span class="n">MinosQueryServiceException</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="PreEventHandler"><a class="viewcode-back" href="../../../api/minos.cqrs.handlers.html#minos.cqrs.handlers.PreEventHandler">[docs]</a><span class="k">class</span> <span class="nc">PreEventHandler</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Pre Event Handler class.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="PreEventHandler.handle"><a class="viewcode-back" href="../../../api/minos.cqrs.handlers.html#minos.cqrs.handlers.PreEventHandler.handle">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">,</span> <span class="n">diff</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="n">saga_manager</span><span class="p">:</span> <span class="n">SagaManager</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">resolve_references</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Handle pre event function.</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">diff</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="n">resolve_references</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Handle ModelRef resolution for Events.</span>
 
-<span class="sd">        :param diff: The initial aggregate difference.</span>
-<span class="sd">        :param user: TODO</span>
-<span class="sd">        :param saga_manager: The saga manager to be used to compute the queries to another microservices.</span>
-<span class="sd">        :param resolve_references: If ``True``, reference are resolved, otherwise, the ``AggregateDiff`` is returned</span>
-<span class="sd">            without any modification.</span>
-<span class="sd">        :return: The recomposed aggregate difference.</span>
+<span class="sd">        :param diff: The instance containing ``ModelRef`` instances.</span>
+<span class="sd">        :param resolve_references: If ``True`` the resolution is performed, otherwise it is skipped.</span>
+<span class="sd">        :param kwargs: Additional named arguments.</span>
+<span class="sd">        :return: The original instance with the ``ModelRef`` references already resolved.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">AggregateDiff</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">resolve_references</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">diff</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">definition</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">build_saga</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">MinosNotAnyMissingReferenceException</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">diff</span>
-
-        <span class="n">execution</span> <span class="o">=</span> <span class="k">await</span> <span class="n">saga_manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">definition</span><span class="o">=</span><span class="n">definition</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">execution</span><span class="p">,</span> <span class="n">SagaExecution</span><span class="p">)</span> <span class="ow">or</span> <span class="n">execution</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="n">SagaStatus</span><span class="o">.</span><span class="n">Finished</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">MinosQueryServiceException</span><span class="p">(</span><span class="s2">&quot;The saga execution could not finish.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">execution</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="s2">&quot;diff&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="PreEventHandler.build_saga"><a class="viewcode-back" href="../../../api/minos.cqrs.handlers.html#minos.cqrs.handlers.PreEventHandler.build_saga">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">build_saga</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">diff</span><span class="p">:</span> <span class="n">AggregateDiff</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Saga</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Build a saga to query the referenced aggregates.</span>
-
-<span class="sd">        :param diff: The base aggregate difference.</span>
-<span class="sd">        :return: A saga instance.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">missing</span> <span class="o">=</span> <span class="n">ModelRefExtractor</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">fields_diff</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">MinosNotAnyMissingReferenceException</span><span class="p">(</span><span class="s2">&quot;The diff does not have any missing reference.&quot;</span><span class="p">)</span>
-
-        <span class="n">steps</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">RemoteSagaStep</span><span class="p">(</span>
-                <span class="n">on_execute</span><span class="o">=</span><span class="n">SagaOperation</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">on_execute</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">uuids</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">uuids</span><span class="p">)),</span>
-                <span class="n">on_success</span><span class="o">=</span><span class="n">SagaOperation</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">on_success</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">),</span>
-            <span class="p">)</span>
-            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">uuids</span> <span class="ow">in</span> <span class="n">missing</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-        <span class="p">]</span>
-        <span class="c1"># noinspection PyTypeChecker</span>
-        <span class="n">steps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LocalSagaStep</span><span class="p">(</span><span class="n">on_execute</span><span class="o">=</span><span class="n">SagaOperation</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">commit</span><span class="p">,</span> <span class="n">diff</span><span class="o">=</span><span class="n">diff</span><span class="p">)))</span>
-
-        <span class="n">saga</span> <span class="o">=</span> <span class="n">Saga</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="n">steps</span><span class="p">,</span> <span class="n">committed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">saga</span></div>
-
-    <span class="c1"># noinspection PyUnusedLocal</span>
-<div class="viewcode-block" id="PreEventHandler.on_execute"><a class="viewcode-back" href="../../../api/minos.cqrs.handlers.html#minos.cqrs.handlers.PreEventHandler.on_execute">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">on_execute</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">SagaContext</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">uuids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">UUID</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">SagaRequest</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Callback to prepare data before invoking participants.</span>
-
-<span class="sd">        :param context: The saga context (ignored).</span>
-<span class="sd">        :param name: The name of the aggregate.</span>
-<span class="sd">        :param uuids: The list of identifiers.</span>
-<span class="sd">        :return: A dto instance.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">SagaRequest</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Get</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;uuids&quot;</span><span class="p">:</span> <span class="n">uuids</span><span class="p">})</span></div>
-
-<div class="viewcode-block" id="PreEventHandler.on_success"><a class="viewcode-back" href="../../../api/minos.cqrs.handlers.html#minos.cqrs.handlers.PreEventHandler.on_success">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">on_success</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">SagaContext</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">SagaResponse</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SagaContext</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Callback to handle the response on successful cases.</span>
-
-<span class="sd">        :param context: The previous saga context instance.</span>
-<span class="sd">        :param response: The obtained response.</span>
-<span class="sd">        :param name: The name of the aggregate.</span>
-<span class="sd">        :return: The new saga context instance.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">context</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">context</span></div>
-
-<div class="viewcode-block" id="PreEventHandler.commit"><a class="viewcode-back" href="../../../api/minos.cqrs.handlers.html#minos.cqrs.handlers.PreEventHandler.commit">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">commit</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">SagaContext</span><span class="p">,</span> <span class="n">diff</span><span class="p">:</span> <span class="n">AggregateDiff</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SagaContext</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Callback to be executed at the end of the saga.</span>
-
-<span class="sd">        :param context: The saga execution context.</span>
-<span class="sd">        :param diff: The initial aggregate difference.</span>
-<span class="sd">        :return: A saga context containing the enriched aggregate difference.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">recovered</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">context</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span>
-                <span class="n">recovered</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">uuid</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-
-        <span class="n">diff</span> <span class="o">=</span> <span class="n">ModelRefInjector</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">recovered</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">SagaContext</span><span class="p">(</span><span class="n">diff</span><span class="o">=</span><span class="n">diff</span><span class="p">)</span></div></div>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">ModelRefResolver</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;An exception was raised while trying to resolve model references: </span><span class="si">{</span><span class="n">exc</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">diff</span></div></div>
 
 
 <span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>

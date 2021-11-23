@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>minos.cqrs.handlers module &mdash; Minos Microservice CQRS 0.2.0 documentation</title>
+  <title>minos.cqrs.handlers module &mdash; Minos Microservice CQRS 0.2.1 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.2.0
+                0.2.1
               </div>
             
           
@@ -186,103 +186,22 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Pre Event Handler class.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="minos.cqrs.handlers.PreEventHandler.build_saga">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build_saga</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diff</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/handlers.html#PreEventHandler.build_saga"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.handlers.PreEventHandler.build_saga" title="Permalink to this definition">¶</a></dt>
-<dd><p>Build a saga to query the referenced aggregates.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>diff</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">minos.aggregate.models.diffs.aggregates.AggregateDiff</span></code>) – The base aggregate difference.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">minos.saga.definitions.saga.Saga</span></code></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A saga instance.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="minos.cqrs.handlers.PreEventHandler.commit">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">commit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diff</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/handlers.html#PreEventHandler.commit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.handlers.PreEventHandler.commit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Callback to be executed at the end of the saga.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>context</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">minos.saga.context.SagaContext</span></code>) – The saga execution context.</p></li>
-<li><p><strong>diff</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">minos.aggregate.models.diffs.aggregates.AggregateDiff</span></code>) – The initial aggregate difference.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">minos.saga.context.SagaContext</span></code></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A saga context containing the enriched aggregate difference.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="minos.cqrs.handlers.PreEventHandler.handle">
-<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saga_manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolve_references</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/handlers.html#PreEventHandler.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.handlers.PreEventHandler.handle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle pre event function.</p>
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolve_references</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/handlers.html#PreEventHandler.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.handlers.PreEventHandler.handle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle ModelRef resolution for Events.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>diff</strong> (<em>~T</em>) – The initial aggregate difference.</p></li>
-<li><p><strong>user</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">typing.Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">uuid.UUID</span></code>]) – TODO</p></li>
-<li><p><strong>saga_manager</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">minos.saga.manager.SagaManager</span></code>) – The saga manager to be used to compute the queries to another microservices.</p></li>
-<li><p><strong>resolve_references</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, reference are resolved, otherwise, the <code class="docutils literal notranslate"><span class="pre">AggregateDiff</span></code> is returned
-without any modification.</p></li>
+<li><p><strong>diff</strong> (<em>~T</em>) – The instance containing <code class="docutils literal notranslate"><span class="pre">ModelRef</span></code> instances.</p></li>
+<li><p><strong>resolve_references</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> the resolution is performed, otherwise it is skipped.</p></li>
+<li><p><strong>kwargs</strong> – Additional named arguments.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>~T</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The recomposed aggregate difference.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="minos.cqrs.handlers.PreEventHandler.on_execute">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uuids</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/handlers.html#PreEventHandler.on_execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.handlers.PreEventHandler.on_execute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Callback to prepare data before invoking participants.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>context</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">minos.saga.context.SagaContext</span></code>) – The saga context (ignored).</p></li>
-<li><p><strong>name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the aggregate.</p></li>
-<li><p><strong>uuids</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">uuid.UUID</span></code>]) – The list of identifiers.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">minos.saga.messages.SagaRequest</span></code></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A dto instance.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="minos.cqrs.handlers.PreEventHandler.on_success">
-<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_success</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/handlers.html#PreEventHandler.on_success"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.handlers.PreEventHandler.on_success" title="Permalink to this definition">¶</a></dt>
-<dd><p>Callback to handle the response on successful cases.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>context</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">minos.saga.context.SagaContext</span></code>) – The previous saga context instance.</p></li>
-<li><p><strong>response</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">minos.saga.messages.SagaResponse</span></code>) – The obtained response.</p></li>
-<li><p><strong>name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the aggregate.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">minos.saga.context.SagaContext</span></code></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The new saga context instance.</p>
+<dd class="field-odd"><p>The original instance with the <code class="docutils literal notranslate"><span class="pre">ModelRef</span></code> references already resolved.</p>
 </dd>
 </dl>
 </dd></dl>

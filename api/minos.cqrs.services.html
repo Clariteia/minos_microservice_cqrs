@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>minos.cqrs.services module &mdash; Minos Microservice CQRS 0.2.0 documentation</title>
+  <title>minos.cqrs.services module &mdash; Minos Microservice CQRS 0.2.1 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.2.0
+                0.2.1
               </div>
             
           
@@ -182,36 +182,36 @@
 <span id="minos-cqrs-services-module"></span><h1>minos.cqrs.services module<a class="headerlink" href="#module-minos.cqrs.services" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="minos.cqrs.services.CommandService">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">minos.cqrs.services.</span></span><span class="sig-name descname"><span class="pre">CommandService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config=&lt;dependency_injector.wiring.Provide</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saga_manager=&lt;dependency_injector.wiring.Provide</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/services.html#CommandService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.services.CommandService" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">minos.cqrs.services.</span></span><span class="sig-name descname"><span class="pre">CommandService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">container=&lt;dependency_injector.wiring.Provide</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/services.html#CommandService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.services.CommandService" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#minos.cqrs.services.Service" title="minos.cqrs.services.Service"><code class="xref py py-class docutils literal notranslate"><span class="pre">minos.cqrs.services.Service</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <p>Command Service class</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="minos.cqrs.services.CommandService.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config=&lt;dependency_injector.wiring.Provide</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saga_manager=&lt;dependency_injector.wiring.Provide</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#minos.cqrs.services.CommandService.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">container=&lt;dependency_injector.wiring.Provide</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#minos.cqrs.services.CommandService.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="minos.cqrs.services.QueryService">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">minos.cqrs.services.</span></span><span class="sig-name descname"><span class="pre">QueryService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config=&lt;dependency_injector.wiring.Provide</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saga_manager=&lt;dependency_injector.wiring.Provide</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/services.html#QueryService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.services.QueryService" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">minos.cqrs.services.</span></span><span class="sig-name descname"><span class="pre">QueryService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">container=&lt;dependency_injector.wiring.Provide</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/services.html#QueryService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.services.QueryService" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#minos.cqrs.services.Service" title="minos.cqrs.services.Service"><code class="xref py py-class docutils literal notranslate"><span class="pre">minos.cqrs.services.Service</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <p>Query Service class</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="minos.cqrs.services.QueryService.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config=&lt;dependency_injector.wiring.Provide</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saga_manager=&lt;dependency_injector.wiring.Provide</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#minos.cqrs.services.QueryService.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">container=&lt;dependency_injector.wiring.Provide</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#minos.cqrs.services.QueryService.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="minos.cqrs.services.Service">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">minos.cqrs.services.</span></span><span class="sig-name descname"><span class="pre">Service</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config=&lt;dependency_injector.wiring.Provide</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saga_manager=&lt;dependency_injector.wiring.Provide</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/services.html#Service"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.services.Service" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">minos.cqrs.services.</span></span><span class="sig-name descname"><span class="pre">Service</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">container=&lt;dependency_injector.wiring.Provide</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/services.html#Service"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.services.Service" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <p>Base Service class</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="minos.cqrs.services.Service.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config=&lt;dependency_injector.wiring.Provide</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saga_manager=&lt;dependency_injector.wiring.Provide</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/services.html#Service.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.services.Service.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">container=&lt;dependency_injector.wiring.Provide</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/minos/cqrs/services.html#Service.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#minos.cqrs.services.Service.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
